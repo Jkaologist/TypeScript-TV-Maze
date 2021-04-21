@@ -12870,11 +12870,27 @@ function populateEpisodes(episodes) {
     $episodesList.empty();
     for (var _i = 0, episodes_1 = episodes; _i < episodes_1.length; _i++) {
         var episode = episodes_1[_i];
-        var $item = $("<li>\n      " + episode.name + "\n      " + episode.season + "\n      " + episode.number + "\n      </li>");
+        var $item = $("<li>\n      " + episode.name + "\n      \n      " + episode.season + "\n      " + episode.number + "\n      </li>");
         $episodesList.append($item);
     }
     $episodesArea.show();
 }
+$showsList.on("click", "button", function (evt) {
+    return __awaiter(this, void 0, void 0, function () {
+        var id, episodes;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    id = $(evt.target).closest(".Show").data("show-id");
+                    return [4 /*yield*/, getEpisodesOfShow(id)];
+                case 1:
+                    episodes = _a.sent();
+                    populateEpisodes(episodes);
+                    return [2 /*return*/];
+            }
+        });
+    });
+});
 
 
 /***/ })

@@ -113,6 +113,7 @@ function populateEpisodes(episodes: Episode[]) {
     const $item = $(
       `<li>
       ${episode.name}
+      
       ${episode.season}
       ${episode.number}
       </li>`
@@ -121,3 +122,11 @@ function populateEpisodes(episodes: Episode[]) {
   }
   $episodesArea.show();
 }
+
+$showsList.on("click", "button", async function(evt: JQuery.ClickEvent){
+  const id = $(evt.target).closest(".Show").data("show-id");
+
+  const episodes = await getEpisodesOfShow(id);
+
+  populateEpisodes(episodes);
+});
