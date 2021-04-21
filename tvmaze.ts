@@ -2,6 +2,7 @@ import axios from "axios";
 import * as $ from "jquery";
 
 const $showsList = $("#showsList");
+const $episodesList = $("#episodesList");
 const $episodesArea = $("#episodesArea");
 const $searchForm = $("#searchForm");
 const BASE_URL = "http://api.tvmaze.com/";
@@ -15,11 +16,19 @@ const ALT_IMG = "https://tinyurl.com/tv-missing";
  */
 
 type Show = {
-  id: number;
-  name: string;
-  summary: string;
-  image: {medium: string};
+  id: number,
+  name: string,
+  summary: string,
+  image: {medium: string}
 }
+
+type Episode = {
+  id: number,
+  name: string,
+  season: string,
+  number: string
+}
+
 async function getShowsByTerm(term: string): Promise<Show[]> {
   // ADD: Remove placeholder & make request to TVMaze search shows API.
   let result = await axios.get(`${BASE_URL}search/shows?q=${term}`);
@@ -68,7 +77,7 @@ function populateShows(shows: Show[]) {
  */
 
 async function searchForShowAndDisplay() {
-  const term = $("#searchForm-term").val();
+  const term = $("#searchForm-term").val() as string;
   const shows = await getShowsByTerm(term);
 
   $episodesArea.hide();
@@ -84,8 +93,31 @@ $searchForm.on("submit", async function (evt) {
  *      { id, name, season, number }
  */
 
-// async function getEpisodesOfShow(id) { }
+async function getEpisodesOfShow(id: number) {
+  let res = await axios.get(`${BASE_URL}shows/${id}/episodes`);   
+  const episodes = res.data.map((episode : Episode) => ({
+    id: episode.id,
+    name: episode.name,
+    season: episode.season,
+    number: episode.number
+  }));
+   return episodes;
+}
 
 /** Write a clear docstring for this function... */
 
-// function populateEpisodes(episodes) { }
+function populateEpisodes(episodes: Episode[]) { 
+  $episodesList.empty()
+
+  for (let episode of episodes) {
+    const $item = $(
+      `<li>
+      ${episode.name}
+      ${episode.season}
+      ${episode.number}
+      </li>`
+    )
+    $episodesList.append($item)
+  }
+  $episodesArea.show();
+}

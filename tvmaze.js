@@ -12773,6 +12773,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 var axios_1 = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 var $showsList = $("#showsList");
+var $episodesList = $("#episodesList");
 var $episodesArea = $("#episodesArea");
 var $searchForm = $("#searchForm");
 var BASE_URL = "http://api.tvmaze.com/";
@@ -12845,9 +12846,35 @@ $searchForm.on("submit", function (evt) {
 /** Given a show ID, get from API and return (promise) array of episodes:
  *      { id, name, season, number }
  */
-// async function getEpisodesOfShow(id) { }
+function getEpisodesOfShow(id) {
+    return __awaiter(this, void 0, void 0, function () {
+        var res, episodes;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, axios_1.default.get(BASE_URL + "shows/" + id + "/episodes")];
+                case 1:
+                    res = _a.sent();
+                    episodes = res.data.map(function (episode) { return ({
+                        id: episode.id,
+                        name: episode.name,
+                        season: episode.season,
+                        number: episode.number
+                    }); });
+                    return [2 /*return*/, episodes];
+            }
+        });
+    });
+}
 /** Write a clear docstring for this function... */
-// function populateEpisodes(episodes) { }
+function populateEpisodes(episodes) {
+    $episodesList.empty();
+    for (var _i = 0, episodes_1 = episodes; _i < episodes_1.length; _i++) {
+        var episode = episodes_1[_i];
+        var $item = $("<li>\n      " + episode.name + "\n      " + episode.season + "\n      " + episode.number + "\n      </li>");
+        $episodesList.append($item);
+    }
+    $episodesArea.show();
+}
 
 
 /***/ })
